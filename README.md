@@ -8,7 +8,7 @@ A CLI tool that converts MCP Checker test result JSON files to JUnit XML format 
 - Supports reading from file argument or stdin
 - Groups tests by difficulty level (easy, medium, hard)
 - Captures assertion failures and phase errors
-- **Human-readable output format** inspired by `mcpchecker view`
+- **Human-readable output format**
   - Task summary with status and difficulty
   - Assertion pass/fail counts
   - Tool call history and summaries
@@ -48,12 +48,12 @@ make build
 
 ### Read from file
 ```bash
-mcpchecker-junit-report mcpchecker-eval-all-out.json > junit-report.xml
+mcpchecker-junit-report mcpchecker-eval-out.json > junit-report.xml
 ```
 
 ### Read from stdin
 ```bash
-cat mcpchecker-eval-all-out.json | mcpchecker-junit-report > junit-report.xml
+cat mcpchecker-eval-out.json | mcpchecker-junit-report > junit-report.xml
 ```
 
 **Note:** If you built from source and didn't install to your PATH, use `./mcpchecker-junit-report` instead of `mcpchecker-junit-report`.
@@ -109,19 +109,13 @@ Assertions: 3/3 passed
 Call history: tools=1 (func-mcp:1 ok) resources=3
   Tool output:
     • func-mcp::create (ok)
-      Created node function in /tmp/fn-create
+      Created node function in /tmp/myfunc
 Timeline:
-  - note: Perfect! I've successfully created a Node.js Function named 'fn-create'
-    at `/tmp/fn-create` using the default http template.
+  - note: Perfect! I've successfully created a Node.js Function named 'myfunc'
+    at `/tmp/myfunc` using the default http template.
   - note: The Function has been initialized and is ready for development.
 ```
 
-This structured format makes it easy to:
-- Quickly identify test status and difficulty
-- See assertion results at a glance
-- Understand which tools were called
-- Follow the test execution timeline
-- Review error details in context
 
 ## Example
 
@@ -146,4 +140,24 @@ Given the input JSON:
 ]
 ```
 
-The tool generates JUnit XML with human-readable system-out content (see format above).
+The tool produces
+
+```xml
+<testsuites>
+  <testsuite name="MCP Checker Tests - easy" tests="1" failures="0" errors="0">
+    <testcase name="create-function" classname="tasks.create-function">
+      <system-out><![CDATA[Task: create-function
+Path: /path/to/tasks/create-function/task.yaml
+Difficulty: easy
+Status: PASSED
+Assertions: 1/1 passed
+Call history: tools=1 (func-mcp:1 ok) resources=3
+  Tool output:
+    • func-mcp::create (ok)
+Timeline:
+  Successfully created function
+      ]]></system-out>
+    </testcase>
+  </testsuite>
+</testsuites>
+```
