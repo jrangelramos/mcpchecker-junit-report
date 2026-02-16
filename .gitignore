@@ -1,0 +1,15 @@
+# Binaries
+mcpchecker-junit-report
+
+# Test outputs
+junit-report.xml
+*.xml
+
+# Go workspace
+vendor/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
